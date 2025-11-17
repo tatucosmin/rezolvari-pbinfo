@@ -1,20 +1,16 @@
 #include <bits/stdc++.h>
 #include <ostream>
 
+void dfs(std::set<int> g[], std::vector<int>& v, int i, int ccnr) {
 
-void dfs(std::set<int> g[], int curr, int target, int cnt, std::ostream &out)
-{
+  if (v[i] != 0)
+    return;
 
-    for(auto vec : g[curr])
-    {
-        if (curr != target) {
-            cnt++;
-            g[vec].insert(target);
-            out << target << vec;
-        }
+  v[i] = ccnr;
 
-        dfs(g, vec, target, cnt, out);
-    }
+  for (auto vec : g[i]) {
+    dfs(g, v, vec, ccnr);
+  }
 }
 
 int main() {
@@ -27,15 +23,35 @@ int main() {
 
   std::set<int> g[n + 1];
 
-  int a, b;
+  int a{}, b{}, m{};
   while (in >> a >> b) {
-      g[a].insert(b);
-      g[b].insert(a);
+    m++;
+    g[a].insert(b);
+    g[b].insert(a);
   }
 
-  int cnt = 0;
-  dfs(g, 1, 1, cnt, out);
 
+
+  std::vector<int> v(n + 1);
+
+  int ccnr{0};
+  for (int i = 1; i <= n; i++) {
+    if (v[i] == 0) {
+      ++ccnr;
+      dfs(g, v, i, ccnr);
+    }
+  }
+
+  // for (auto e : v) {
+  //   std::cout << e;
+  // }
+
+  out << ccnr - 1 << '\n';
+
+  for (int i = 2; i <= ccnr; i++)
+  {
+      out << 1 << " " << std::distance(v.begin(), std::find(v.begin(), v.end(), i)) << '\n';
+  }
 
   return 0;
 }
