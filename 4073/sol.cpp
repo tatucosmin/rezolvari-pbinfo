@@ -1,66 +1,57 @@
 #include <bits/stdc++.h>
 #include <fstream>
+#include <vector>
 
-void dfs(std::set<int> g[], std::vector<int>& v, int i, int ccnr) {
+void dfs(std::vector<int> g[], std::vector<int> &v, int curr, int ccnr) {
+    if (v[curr] != 0)
+        return;
 
-  if (v[i] != 0)
-    return;
+    v[curr] = ccnr;
 
-  v[i] = ccnr;
-
-  for (auto vec : g[i]) {
-    dfs(g, v, vec, ccnr);
-  }
+    for (auto vec : g[curr])
+        dfs(g, v, vec, ccnr);
 }
 
 int main()
 {
-    std::ifstream in { "componenteconexe3.in" };
-    std::ofstream out { "componenteconexe3.out" };
+    std::ifstream in { "componenteconexe5.in" };
+    std::ofstream out { "componenteconexe5.out" };
 
-    int n;
+    int n, m;
+    in >> n >> m;
 
-    in >> n;
-
-    std::set<int> g[n + 1];
-
+    std::vector<int> g[n + 1], v(n + 1);
     int a, b;
-    while (in >> a >> b)
+
+    while (m--)
     {
-        g[a].insert(b);
-        g[b].insert(a);
+        in >> a >> b;
+        g[a].push_back(b);
+        g[b].push_back(a);
     }
 
-    std::vector<int> v(n + 1);
+    int q;
+    in >> q;
 
-    int ccnr{0};
-    for (int i = 1; i <= n; i++) {
-      if (v[i] == 0) {
-        ++ccnr;
-        dfs(g, v, i, ccnr);
-      }
-    }
-
-    int ma{-1}, aidx{0}, idx{ 1 }, s{};
-    for (int i = 1; i <= ccnr; i++)
+    std::vector<int> nodes;
+    while (q--)
     {
-        s = 0;
-        for (int j = 1; j <= v.size(); j++)
-        {
-            if (s == 0) {
-                idx = j;
-            }
-
-            if (v[j] == i)
-                s++;
-        }
-
-        if (s > ma) {
-            ma = s;
-            aidx = idx;
-        }
+        in >> a;
+        nodes.push_back(a);
     }
 
-    out << aidx << " " << ma;
+    int ccnr{ 0 };
+    for (int i = 1; i < n; i++)
+        dfs(g, v, i, ++ccnr);
 
+    std::map<int, int> freq;
+    for (auto e : v)
+    {
+        freq[e]++;
+    }
+
+    for (auto node : nodes)
+    {
+        out << freq[v[node]] << '\n';
+    }
 }
