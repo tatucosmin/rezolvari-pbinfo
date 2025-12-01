@@ -1,5 +1,6 @@
 #include <bits/stdc++.h>
 #include <fstream>
+#include <vector>
 
 void dfs(std::vector<int> g[], std::vector<int> &lookup, std::vector<int> &viz,
          int curr, int &ans) {
@@ -12,6 +13,7 @@ void dfs(std::vector<int> g[], std::vector<int> &lookup, std::vector<int> &viz,
   ans += lookup[curr];
 
   int maxvec{-1}, maxidx{-1};
+
   for (auto vec : g[curr]) {
     if (maxvec < lookup[vec] && !viz[vec]) {
       maxvec = lookup[vec];
@@ -39,6 +41,9 @@ int main() {
     g[a].push_back(b);
     g[b].push_back(a);
   }
+
+  for (int i = 1; i <= n; i++)
+      std::sort(g[i].begin(), g[i].end());
 
   int ans{0};
   dfs(g, mere, viz, 1, ans);
